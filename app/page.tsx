@@ -10,7 +10,6 @@ async function getData () {
 
 export default async function Home () {
   const elements = await getData()
-  const HOSTNAME = process.env.HOSTNAME
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#1A1A1A]">
       <ul className="grid grid-cols-2 md:grid-cols-5 gap-5">
@@ -26,7 +25,6 @@ export default async function Home () {
             <p className="text-base">{element.elementName}</p>
           </li>
         ))}
-        <p>{HOSTNAME}</p>
       </ul>
     </main>
   );
