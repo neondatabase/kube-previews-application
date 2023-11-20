@@ -26,7 +26,6 @@ export default async function Home () {
             <p className="text-base">{element.elementName}</p>
           </li>
         ))}
-        <p>{HOSTNAME}</p>
       </ul>
     </main>
   );
