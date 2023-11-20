@@ -61,7 +61,10 @@ jobs:
       run: argocd login ${{ secrets.ARGOCD_HOSTNAME }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
 
     - name: Update the Preview Environment with the Neon Branch URL
-      run: argocd app set nkp-pr-${{github.event.number}} --parameter database.url=${{ steps.create-branch.outputs.db_url }}
+      run: |
+        argocd app set nkp-pr-${{github.event.number}} \
+        --parameter database.url=${{ steps.create-branch.outputs.db_url }} \
+        --parameter deployment.image.tag=${{ github.event.pull_request.head.sha }}
 
     - name: Comment on Pull Request
       uses: thollander/actions-comment-pull-request@v2
