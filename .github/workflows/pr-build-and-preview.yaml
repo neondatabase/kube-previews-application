@@ -24,8 +24,6 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        context: elements-application/
-        file: elements-application/Dockerfile
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/neon-kube-previews:${{ github.event.pull_request.head.sha }}
 
   create-preview-environment:
