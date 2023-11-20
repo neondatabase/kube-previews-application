@@ -1,0 +1,7 @@
+# Environment files should not be copied and pushed to a container registry!
+.env*
+
+# Host node_modules, and .next folder should not be copied into the container.
+# Issues related to macOS vs Linux binaries for native addons etc. could occur
+node_modules
+.next

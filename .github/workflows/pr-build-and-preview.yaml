@@ -1,0 +1,76 @@
+name: Build Container Image and Preview Environment
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and Push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        context: elements-application/
+        file: elements-application/Containerfile
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/neon-kube-previews:${{ github.event.pull_request.head.sha }}
+
+  create-preview-environment:
+    runs-on: ubuntu-latest
+
+    # Wait for the docker build and push to complete prior to running this job.
+    # Technically this could run in parallel, but it doesn't make sense to add
+    # a preview URL if the build step fails 
+    needs: build-container
+
+    # This permission is required to comment with the preview URL on the PR
+    permissions: 
+      pull-requests: write 
+
+    steps:
+    # Create a new branch on Neon using the PR number in the branch name. This
+    # operation is idempotent, so it's effectively a no-op if more commits are
+    # push to the original PR
+    - name: Create Neon Branch and Compute for PR
+      id: create-branch
+      uses: neondatabase/create-branch-action@v4
+      with:
+        api_key: ${{ secrets.NEON_API_KEY }}
+        project_id: ${{ secrets.NEON_PROJECT_ID }}
+        branch_name: pr-${{ github.event.number }}
+        parent: main
+
+    - name: Install the Argo CD CLI
+      run: |
+        curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v2.8.4/argocd-linux-amd64
+        sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+        rm argocd-linux-amd64
+
+    - name: Login to Argo CD
+      run: argocd login ${{ secrets.ARGOCD_HOSTNAME }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+
+    - name: Update the Preview Environment with the Neon Branch URL
+      run: argocd app set nkp-pr-${{github.event.number}} --parameter database.url=${{ steps.create-branch.outputs.db_url }}
+
+    - name: Comment on Pull Request
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          :rocket: Preview URL: https://pr-${{github.event.number}}.${{ secrets.PREVIEW_SUBDOMAIN }}
+          :octopus: Argo CD URL: https://${{ secrets.ARGOCD_HOSTNAME }}/applications/argocd/nkp-pr-${{github.event.number}}
+        # Comment tag allows the action to update an existing comment, if one
+        # exists. This prevents spamming the PR with identical comments
+        comment_tag: preview-url
