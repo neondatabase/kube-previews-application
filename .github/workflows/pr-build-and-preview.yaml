@@ -60,6 +60,8 @@ jobs:
     - name: Login to Argo CD
       run: argocd login ${{ secrets.ARGOCD_HOSTNAME }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
 
+    # Use parameter overrides to set the image tag and database URL:
+    # https://argo-cd.readthedocs.io/en/stable/user-guide/parameters/
     - name: Update the Preview Environment with the Neon Branch URL
       run: |
         argocd app set nkp-pr-${{github.event.number}} \
