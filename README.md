@@ -21,8 +21,9 @@ A Kubernetes cluster is required to run this sample. The [manifests repository](
 contains instructions and a script to configure a local Kubernetes environment
 and Argo CD instance.
 
-To run the GitHub Actions workflow in response to a PR, add the following
-secrets to the repository using the **Settings > Secrets and variables > Actions** screen:
+To run the GitHub Actions workflow, add the following secrets to your fork
+of this repository using the **Settings > Secrets and variables > Actions**
+screen:
 
 * `DOCKERHUB_TOKEN` - A token with write access to a repository on Docker Hub. Created from the [Account Settings / Security](https://hub.docker.com/settings/security) page on Docker Hub.
 * `DOCKERHUB_USERNAME` - The username that owns the `neon-kube-previews` repository that the container image will be written to.
