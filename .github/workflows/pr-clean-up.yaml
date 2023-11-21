@@ -5,6 +5,7 @@ on:
 
 jobs:
   delete-branch:
+    steps:
     - name: Delete Neon PR Branch
       uses: neondatabase/delete-branch-action@v2
       with:
