@@ -16,7 +16,7 @@ export default async function Home () {
         {elements.map((element:any) => (
           <li
             key={element.id}
-            className="relative flex flex-col text-center p-5 rounded-md bg-[#00E699] transition-colors hover:bg-[#00e5BF] text-[black]"
+            className="relative flex flex-col text-center p-5 rounded-md bg-[#00E699] transition-colors hover:bg-indigo-200 text-[black]"
           >
             <p className="absolute top-2 left-2 text-sm">
               {element.atomicNumber}
