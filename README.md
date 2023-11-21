@@ -16,8 +16,9 @@ the pull request with a link to the preview environment.
 
 ## Requirements
 
-To run the GitHub Actions workflow, add the following secrets to the repository
-using the **Settings > Secrets and variables > Actions** screen:
+To run the GitHub Actions workflow, add the following secrets to your fork
+of this repository using the **Settings > Secrets and variables > Actions**
+screen:
 
 * `DOCKERHUB_TOKEN` - A token with write access to a repository on Docker Hub.
 * `DOCKERHUB_USERNAME` - The username that owns the `neon-kube-previews` repository that the container image will be written to.
