@@ -1,7 +1,7 @@
 # Neon Branching for Kubernetes-based Preview Environments
 
 This repository contains source code for a sample Next.js application that's
-used in conjunction with a [set of Kubernetes manifests](https://github.com/evanshortiss/neon-kube-previews-manifests).
+used in conjunction with a [set of Kubernetes manifests](https://github.com/neondatabase/kube-previews-manifests).
 These work in tandem with Neon's branching feature to create unique preview
 environments, each with their own unique serverless Postgres database.
 
@@ -10,14 +10,14 @@ environments, each with their own unique serverless Postgres database.
 1. Each PR opened against the repository will trigger workflow that:
     * Builds the Next.js application into a container image.
     * Creates a Neon branch to use in the preview environment.
-1. An Argo CD [Argo CD ApplicationSet](https://github.com/evanshortiss/neon-kube-previews-manifests/blob/main/kind-cluster/application-set.yaml) will detect the PR and create a namespace on your Kubernetes cluster to deploy the new container image.
+1. An Argo CD [Argo CD ApplicationSet](https://github.com/neondatabase/kube-previews-manifests/blob/main/kind-cluster/application-set.yaml) will detect the PR and create a namespace on your Kubernetes cluster to deploy the new container image.
 1. Once the workflow associated with a pull request is complete it will:
     * Update the Argo-managed preview environment with the Neon branch Postgres connection string and container image tag.
     * Comment on the pull request with a link to the preview environment.
 
 ## Requirements
 
-A Kubernetes cluster is required to run this sample. The [manifests repository](https://github.com/evanshortiss/neon-kube-previews-manifests)
+A Kubernetes cluster is required to run this sample. The [manifests repository](https://github.com/neondatabase/kube-previews-manifests)
 contains instructions and a script to configure a local Kubernetes environment
 and Argo CD instance.
 
